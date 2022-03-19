@@ -16,7 +16,10 @@ limitations under the License.
 
 package constants
 
-import "time"
+import (
+	"os"
+	"time"
+)
 
 // Command-line flag defaults
 const (
@@ -171,3 +174,6 @@ var DefaultEtcdDiskPriorities = []string{
 	"IOSchedulingClass=best-effort",
 	"IOSchedulingPriority=2",
 }
+
+// DefaultSnapDataDir defines the default directory for configuration files when using snapctl.
+var DefaultSnapDataDir = os.Getenv("SNAP_DATA")

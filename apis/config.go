@@ -110,6 +110,9 @@ type EtcdAdmConfig struct {
 	// This is a bool, but we use a string because the default value changes across versions.
 	EnableV2 string
 	Endpoint string
+
+	// SnapDataDir selects the configuration directory when using the snapctl init system
+	SnapDataDir string
 }
 
 // InitSystem represents the different types of init system
@@ -120,6 +123,8 @@ const (
 	Systemd InitSystem = "systemd"
 	// Kubelet represents the kubelet init system
 	Kubelet InitSystem = "kubelet"
+	// Snapctl represents the snapctl init system
+	Snapctl InitSystem = "snapctl"
 )
 
 // EndpointStatus TODO: add description

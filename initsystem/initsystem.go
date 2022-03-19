@@ -23,6 +23,7 @@ import (
 
 	"sigs.k8s.io/etcdadm/apis"
 	"sigs.k8s.io/etcdadm/initsystem/kubelet"
+	"sigs.k8s.io/etcdadm/initsystem/snapctl"
 )
 
 // InitSystem is the interface that describe behaviors of an init system
@@ -43,6 +44,8 @@ func GetInitSystem(config *apis.EtcdAdmConfig) (InitSystem, error) {
 		return systemd(config)
 	case apis.Kubelet:
 		return kubelet.New(config), nil
+	case apis.Snapctl:
+		return snapctl.New(config), nil
 	default:
 		return nil, fmt.Errorf("invalid init system %s", config.InitSystem)
 	}
@@ -55,4 +58,17 @@ func systemd(config *apis.EtcdAdmConfig) (InitSystem, error) {
 	}
 
 	return nil, fmt.Errorf("systemd not detected; ensure that `systemctl` is in the PATH")
+}
+
+// setDefaults is an optional interface implemented by an InitSystem to override default configuration.
+type setDefaults interface {
+	// SetDefaults edits the configuration in-place.
+	SetDefaults(cfg *apis.EtcdAdmConfig)
+}
+
+// SetDefaults sets default configuration base on the InitSystem.
+func SetDefaults(initSystem InitSystem, cfg *apis.EtcdAdmConfig) {
+	if initSystem, ok := initSystem.(setDefaults); ok {
+		initSystem.SetDefaults(cfg)
+	}
 }

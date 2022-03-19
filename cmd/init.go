@@ -53,6 +53,7 @@ func init() {
 	initCmd.PersistentFlags().StringVar(&etcdAdmConfig.ImageRepository, "image-repository", constants.DefaultImageRepository, "image repository when using kubelet init system")
 	initCmd.PersistentFlags().StringVar(&etcdAdmConfig.DataDir, "data-dir", constants.DefaultDataDir, "etcd data directory")
 	initCmd.PersistentFlags().StringVar(&etcdAdmConfig.PodSpecDir, "kubelet-pod-manifest-path", constants.DefaultPodSpecDir, "kubelet podspec directory")
+	initCmd.PersistentFlags().StringVar(&etcdAdmConfig.SnapDataDir, "snap-data-dir", constants.DefaultSnapDataDir, "snap data directory")
 
 	runner.registerPhasesAsSubcommands(initCmd)
 }
@@ -95,6 +96,7 @@ func initPhasesSetup(_ *cobra.Command, _ []string) (*phaseInput, error) {
 	if err != nil {
 		return nil, fmt.Errorf("[initsystem] error detecting the init system: %w", err)
 	}
+	initsystem.SetDefaults(initSystem, &etcdAdmConfig)
 
 	in := &phaseInput{
 		initSystem:    initSystem,
